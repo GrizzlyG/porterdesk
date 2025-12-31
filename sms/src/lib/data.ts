@@ -2,38 +2,33 @@ export const role = "admin";
 export const NO_AVATAR_URL = "/image/noavatar.png";
 export const SCHOOL_LOGO = "/image/school-logo.png";
 export const ITEM_PAR_PAGE = 10;
-export const SITE_NAME = "School Management System";
+export const SITE_NAME = "Arafims Hostel Management System";
 export const SITE_URL = "http://localhost:3000";
-export const SITE_TITLE = "School Management System";
-export const SITE_DESCRIPTION = "School Management System";
+export const SITE_TITLE = "Arafims Hostel Network Management System";
+export const SITE_DESCRIPTION = "Arafims Hostel Management System";
 export const SITE_IMAGE = "/image/logo.png";
-export const SITE_AUTHOR = "School Management System";
-export const SITE_TWITTER = "@school";
-export const SITE_FACEBOOK = "school";
-export const SITE_INSTAGRAM = "school";
-export const SITE_YOUTUBE = "school";
+export const SITE_AUTHOR = "Arafims Hostel Network Management System";
+export const SITE_TWITTER = "@ahn";
+export const SITE_FACEBOOK = "ahn";
+export const SITE_INSTAGRAM = "ahn";
+export const SITE_YOUTUBE = "ahn";
 export const SITE_PHONE = "123456789";
-export const SITE_EMAIL = "sms@gmail.com";
-export const SITE_ADDRESS = "Dhaka, Bangladesh";
+export const SITE_EMAIL = "ahn@arafims.com";
+export const SITE_ADDRESS = "Ilorin, Nigeria";
 export const SITE_FAX = "123456789";
-export const SITE_COPYRIGHT = "School Management System";
-export const SITE_POWERED_BY = "School Management System";
-export const SCHOOL_NAME = "School Management System";
+export const SITE_COPYRIGHT = "Arafims Hostel Network Management System";
+export const SITE_POWERED_BY = "Arafims Hostel Network Management System";
+export const SCHOOL_NAME = "Arafims Hostel Network Management System";
 export const SCHOOL_CODE = "123456";
 export const SCHOOL_EIIN = "EN23456";
-export const SCHOOL_MESSAGE = "A School of Creative Learning";
+export const SCHOOL_MESSAGE = "Central platform for Managing Arafims Hostels";
 export const GENEREL_SESSION =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6IjEyMzQ1Njc4OTAiLCJuYW1lIjoiVXNlciIsImlhdCI6MTUxNjIzOTAyMn0.q2-bjp-bIbC1KcsegBorKoJvi6BU7tJOGfaLqLVIeT0";
-export const SCHOOL_INTRO = `17th October, 1961. The then Station Commander Colonel Ahmed Ali Sheik, T.P.K. – invited the then President of Pakistan Field Martial Md. Ayub Khan. NPK, H.J. to inaugurate the foundation of this institution. According to the society registration act XXI 1860, this institution was established by Chittagong Cantonment Public School Foundation. From 23rd October 1961 this institution started its journey. After that many gracious and affluent men came forward to make this great endeavor successful with monetary and moral support. Behind it there were sincerity and generosity. 
-
-Rtd. Lt. Colonel M. Sordar Khan (Army Education Corps) was appointed as the first Principal of this institution. He had the experience of academic and administrative works of cadet College and Public School. At last with 24 students and 03 teachers the academic curriculum started. At the beginning of 1970 many highly educated and experienced persons were appointed as the teachers. At that time foreign teachers were also appointed to teach foreign language.
-
-On 1st January, 1971, this institution achieved its first recognition from Secondary and Higher secondary Board of Education, Camilla. Then in class IX humanities group was introduced. During the liberation war of 1971, this institution had to face a great loss. After the independence this institution again started its journey with the effort of the teachers, Board of Trustee and the Board of Governors.
-
-This institution was re-established on 17 March, 1972, with the initiative of the then Brigadier General Mir Showkat Ali BU, psc. Students, teachers, guardians and all the members of the governing body worked jointly to give her the real feature. Next time this institution came under the direct supervision of Bangladesh Army for continuing its gradual acclivity.
-
+export const SCHOOL_INTRO = `Arafims Hostel Network Management System is a comprehensive platform designed to streamline the management of hostels within the Arafims educational institutions. 
+Our system offers a range of features to efficiently handle hostel operations, including student accommodation, fee management, maintenance requests, and communication between hostel staff and residents. 
+With a user-friendly interface and robust functionality, Arafims Hostel Network Management System aims to enhance the overall experience for both hostel administrators and students, ensuring a safe and comfortable living environment.
 `;
-export const SCHOOL_SHORTNAME = "SMS";
+export const SCHOOL_SHORTNAME = "AHNMS";
 export const MonthNames = [
   "January",
   "February",
@@ -116,64 +111,7 @@ export const MenuItems = [
         href: "/profile",
         visiable: ["TEACHER", "STUDENT"],
       },
-      {
-        icon: "ClipboardCheck",
-        label: "E-Subjects",
-        href: "/dashboard/e-subjects",
-        visiable: ["TEACHER"],
-      },
-      {
-        icon: "Book",
-        label: "Subjects",
-        href: "/dashboard/course",
-        visiable: ["ADMIN", "TEACHER"],
-      },
-      {
-        icon: "User",
-        label: "Teachers",
-        href: "/dashboard/teachers",
-        visiable: ["ADMIN", "TEACHER"],
-      },
-      {
-        icon: "Calendar",
-        label: "Attendence",
-        href: "/dashboard/attendance",
-        visiable: ["ADMIN"],
-      },
 
-      {
-        icon: "School",
-        label: "Class",
-        href: "/dashboard/class",
-        visiable: ["ADMIN"],
-      },
-      {
-        icon: "FileSliders",
-        label: "Sections",
-        href: "/dashboard/sections",
-        visiable: ["ADMIN"],
-      },
-
-      {
-        icon: "Users",
-        label: "Students",
-        href: "/dashboard/students",
-        visiable: ["ADMIN", "TEACHER"],
-      },
-
-      {
-        icon: "ClipboardCheck",
-        label: "Exams",
-        href: "/dashboard/exams",
-        visiable: ["ADMIN"],
-      },
-
-      {
-        icon: "Award",
-        label: "Result",
-        href: "/dashboard/results",
-        visiable: ["ADMIN", "TEACHER", "STUDENT"],
-      },
 
       {
         icon: "Bell",
@@ -185,6 +123,30 @@ export const MenuItems = [
         icon: "Building",
         label: "Building",
         href: "/dashboard/buildings",
+        visiable: ["ADMIN"],
+      },
+      {
+        icon: "Settings",
+        label: "Block Config",
+        href: "/dashboard/block-config",
+        visiable: ["ADMIN"],
+      },
+      {
+        icon: "LayoutGrid",
+        label: "Block View",
+        href: "/dashboard/block",
+        visiable: ["ADMIN"],
+      },
+      {
+        icon: "Users",
+        label: "Staff",
+        href: "/dashboard/staff",
+        visiable: ["ADMIN"],
+      },
+      {
+        icon: "GraduationCap",
+        label: "Students",
+        href: "/dashboard/students",
         visiable: ["ADMIN"],
       },
     ],
@@ -242,22 +204,3 @@ export const GradeValues = {
   D: 1.0,
   F: 0.0,
 };
-
-export const ExamResultColumns = [
-  {
-    header: "Section Name",
-    accessor: "section_name",
-  },
-  {
-    header: "Class",
-    accessor: "class",
-  },
-  {
-    header: "Exam Type",
-    accessor: "type",
-  },
-  {
-    header: "Result",
-    accessor: "result",
-  },
-];

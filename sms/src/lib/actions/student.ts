@@ -1,79 +1,158 @@
 "use server";
 import prisma from "@/lib/db";
-
 import bcrypt from "bcrypt";
 import { revalidatePath } from "next/cache";
-import { StudentSchema } from "../schema/schema";
-import { UserRole } from "../types";
+import { UserRole, UserStatus, GENDER, Level } from "@prisma/client";
+import { getDepartmentFromMatric } from "../department_mapping";
+
 interface ReturnProps {
-  error?: string;
-  msg?: string;
+  success: boolean;
+  message: string;
 }
 
-export const addStudentAction = async (
-  formData: FormData
-): Promise<ReturnProps> => {
+export async function createStudent(formData: FormData) {
+  const matricNumberStr = formData.get("matricNumber") as string;
+  const phone = formData.get("phone") as string;
+
+  if (!matricNumberStr || !phone) {
+    return { success: false, message: "Matric Number and Phone Number are required." };
+  }
+
   try {
-    const class_id = parseInt(formData.get("class_id") as string);
-
-    const validateResult = StudentSchema.safeParse({
-      id: parseInt(formData.get("student_id") as string),
-      email: formData.get("email"),
-      password: formData.get("password"),
-      first_name: formData.get("first_name"),
-      last_name: formData.get("last_name"),
-      address: formData.get("address"),
-      section_id: formData.get("section_id"),
-      role: "STUDENT",
-      sex: formData.get("gender"),
-      phone: formData.get("phone"),
-      dob: new Date(formData.get("dob") as string),
-      level: class_id > 5 ? "SECONDARY" : "PRIMARY",
+    const existingStudent = await prisma.student.findFirst({
+      where: { matricNumber: matricNumberStr },
     });
 
-    if (!validateResult.success) {
-      return { error: validateResult.error.errors[0].message };
+    if (existingStudent) {
+      return { success: false, message: "Matric Number already exists" };
     }
 
-    const isExistId = await prisma.student.findUnique({
-      where: { student_id: validateResult.data.id },
-    });
-
-    if (isExistId) {
-      return { error: "Student Id already exists" };
-    }
-
-    const hasedPassword = await bcrypt.hash(validateResult.data.password, 10);
+    // Phone number is the password
+    const hashedPassword = await bcrypt.hash(phone, 10);
+    const email = `student${matricNumberStr.replace(/[^a-zA-Z0-9]/g, '')}@school.com`;
+    const department = getDepartmentFromMatric(matricNumberStr.toString());
 
     await prisma.user.create({
       data: {
-        id: validateResult.data.id,
-        email: validateResult.data.email,
-        password: hasedPassword,
+        email,
+        password: hashedPassword,
         role: UserRole.STUDENT,
-        sex: validateResult.data.sex,
-        lastLogin: new Date().toISOString(),
-        phone: validateResult.data.phone,
-        address: validateResult.data.address,
+        sex: GENDER.MALE, // Default value
+        status: UserStatus.ACTIVE,
+        phone: phone,
+        address: "", // Default empty
         studentProfile: {
           create: {
-            student_id_str: validateResult.data.id.toString(),
-            first_name: validateResult.data.first_name,
-            last_name: validateResult.data.last_name,
-            dob: new Date(validateResult.data.dob).toISOString(),
-            level: validateResult.data.level,
-            section_id: validateResult.data.section_id,
+            matricNumber: matricNumberStr,
+            department: department || undefined,
+          },
+        },
+      },
+    });
+    revalidatePath("/dashboard/students");
+    return { success: true, message: "Student created successfully" };
+  } catch (error) {
+    console.error("Create student error:", error);
+    return { success: false, message: "Failed to create student" };
+  }
+}
+
+export async function registerStudent(prevState: any, formData: FormData): Promise<ReturnProps> {
+  const firstName = formData.get("firstName") as string;
+  const lastName = formData.get("lastName") as string;
+  const matricNumberStr = formData.get("matricNumber") as string;
+  const phone = formData.get("phone") as string;
+  const password = formData.get("password") as string;
+  const dob = formData.get("dob") as string;
+  const level = formData.get("level") as Level;
+  const sex = formData.get("sex") as GENDER;
+  const address = formData.get("address") as string;
+
+  // Basic validation
+  if (!firstName || !lastName || !matricNumberStr || !phone || !password || !dob || !level || !sex || !address) {
+    return { success: false, message: "All fields are required." };
+  }
+
+  try {
+    const existingStudent = await prisma.student.findUnique({
+      where: { matricNumber: matricNumberStr },
+    });
+
+    if (existingStudent) {
+      return { success: false, message: "Matric Number already exists." };
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const email = `student${matricNumberStr.replace(/[^a-zA-Z0-9]/g, '')}@school.com`;
+    const department = getDepartmentFromMatric(matricNumberStr);
+
+    await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        role: UserRole.STUDENT,
+        sex: sex,
+        status: UserStatus.ACTIVE,
+        phone: phone,
+        address: address,
+        studentProfile: {
+          create: {
+            first_name: firstName,
+            last_name: lastName,
+            matricNumber: matricNumberStr,
+            dob: new Date(dob),
+            level: level,
+            profileComplete: true, // Profile is complete on self-registration
+            department: department || undefined,
           },
         },
       },
     });
 
-    revalidatePath("/dashboard/students");
-    revalidatePath("/dashboard");
-
-    return { msg: "Student added successfully" };
-  } catch (error: any) {
-    console.log(error.message);
-    return { error: "Failed to add student" };
+    return { success: true, message: "Registration successful! You can now log in." };
+  } catch (error) {
+    console.error("Register student error:", error);
+    return { success: false, message: "Failed to register student." };
   }
-};
+}
+
+export async function completeStudentProfile(prevState: any, formData: FormData): Promise<ReturnProps> {
+  const userId = parseInt(formData.get("userId") as string);
+  const firstName = formData.get("firstName") as string;
+  const lastName = formData.get("lastName") as string;
+  const phone = formData.get("phone") as string;
+  const dob = formData.get("dob") as string;
+  const level = formData.get("level") as Level;
+  const sex = formData.get("sex") as GENDER;
+  const address = formData.get("address") as string;
+
+  if (!userId || !firstName || !lastName || !phone || !dob || !level || !sex || !address) {
+    return { success: false, message: "All fields are required." };
+  }
+
+  try {
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        phone,
+        address,
+        sex,
+        studentProfile: {
+          update: {
+            first_name: firstName,
+            last_name: lastName,
+            dob: new Date(dob),
+            level: level,
+            profileComplete: true,
+          }
+        }
+      }
+    });
+
+    revalidatePath('/profile');
+    return { success: true, message: "Profile completed successfully!" };
+  } catch (error) {
+    console.error("Complete profile error:", error);
+    return { success: false, message: "Failed to complete profile." };
+  }
+}

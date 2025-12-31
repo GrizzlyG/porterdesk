@@ -39,7 +39,7 @@ const Navbar = async () => {
             ) : (
               <Link className="px-4 py-3.5" href={"/home"}>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-2xl font-extrabold">SMS</h1>
+                  <h1 className="text-2xl font-extrabold">AHN</h1>
                 </div>
               </Link>
             )}

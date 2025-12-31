@@ -3,10 +3,6 @@
 import { useEffect, useState } from "react";
 import SignInForm from "../Forms/SignInForm";
 import ThreeLineSvg from "../svg/ThreeLineSvg";
-import DropdownAcademic from "./DropdownAcademic";
-import DropdownAchivement from "./DropdownAchivement";
-import DropdownAdmission from "./DropdownAdmission";
-import DropdownSchool from "./DropdownSchool";
 
 const Menus = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,10 +28,6 @@ const Menus = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
         }`}
       >
         <div className="flex flex-col items-center mt-4 lg:mt-0 lg:flex-row lg:gap-8  ">
-          <DropdownSchool />
-          <DropdownAcademic />
-          <DropdownAchivement />
-          <DropdownAdmission />
           {!isLoggedIn && <SignInForm />}
         </div>
       </div>

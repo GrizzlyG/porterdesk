@@ -14,7 +14,7 @@ const NavLink = ({ path, title, isLast }: Props) => {
       }`}
     >
       <Link href={path}>
-        <div className="px-4 py-3">{title}</div>
+        <div className="px-4 py-2 text-sm">{title}</div>
       </Link>
     </li>
   );

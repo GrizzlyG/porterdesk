@@ -22,8 +22,8 @@ const FormInput = ({
     <div className={`${width} flex flex-col mb-4 gap-2`}>
       <Label htmlFor={label}>{label}</Label>
       <Input
-        className="w-full"
-        type={type}
+        className="w-full" 
+        type={type} 
         id={label}
         disabled={disabled}
         defaultValue={value}

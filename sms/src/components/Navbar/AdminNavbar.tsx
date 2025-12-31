@@ -1,16 +1,10 @@
 import Image from "next/image";
-import DropdownAcademic from "./DropdownAcademic";
-import DropdownAchivement from "./DropdownAchivement";
-import DropdownSchool from "./DropdownSchool";
 
 const AdminNavbar = async ({ user }: { user: any }) => {
   return (
-    <div className="flex bg-indigo-800 text-white items-center justify-around p-4 shadow">
+    <div className="flex bg-indigo-800 text-white items-center justify-around px-6 py-2 shadow">
       {/* Navbar */}
-      <div className="flex gap-4">
-        <DropdownSchool />
-        <DropdownAcademic />
-        <DropdownAchivement />
+      <div className="flex gap-4 text-sm items-center">
       </div>
 
       {/* Icons And User */}

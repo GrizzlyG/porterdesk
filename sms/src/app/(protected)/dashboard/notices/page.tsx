@@ -4,7 +4,7 @@ import { Status } from "@/lib/types";
 import { decrypt } from "@/session";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import NoticeCreateForm from "./_components/NoticeCreateForm";
+import NoticeForm from "@/components/Forms/NoticeForm";
 
 const NoticePage = async () => {
   const cookieStore = cookies();
@@ -24,14 +24,14 @@ const NoticePage = async () => {
     <div className="max-w-screen-xl mx-auto">
       <div className="p-4 grid grid-cols-12 xl:flex-row">
         <div className=" col-span-12 xl:col-span-7 flex flex-col gap-4 w-full px-6">
-          <NoticeCreateForm />
+          <NoticeForm />
         </div>
         <div className="col-span-12 xl:col-span-5">
           <div className="">
             <h1 className="font-bold text-2xl mb-4">Notices</h1>
             <div className="">
               {notices!.map((notice) => (
-                <NoticeCard notice={notice} key={notice.id} />
+                <NoticeCard key={notice.id} notice={notice} userRole={user.role as any} />
               ))}
             </div>
           </div>

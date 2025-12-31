@@ -17,8 +17,15 @@ export const get_notices = async ({
     const notices = await prisma.notice.findMany({
       select: {
         id: true,
-        title: true,
-        filePathName: true,
+        headline: true,
+        subhead: true,
+        body: true,
+        ps: true,
+        imageUrl: true,
+        fileUrl: true,
+        visibleToManagers: true,
+        visibleToPorters: true,
+        visibleToStudents: true,
         type: true,
         createdAt: true,
       },
@@ -44,9 +51,17 @@ export const get_notice_info = async (
       },
       select: {
         id: true,
-        title: true,
+        headline: true,
+        subhead: true,
+        body: true,
+        ps: true,
+        imageUrl: true,
+        fileUrl: true,
+        visibleToManagers: true,
+        visibleToPorters: true,
+        visibleToStudents: true,
         type: true,
-        filePathName: true,
+        createdAt: true,
       },
     });
     if (!notice) {

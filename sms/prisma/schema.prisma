@@ -3,111 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
-  
-}
-
-model Room {
-  id              String  @id @default(uuid())
-  roomNumber      Int    
-  floor           Int
-  building        String
-  capacity        Int
-  type            RoomType  @default(CLASSROOM)
-  isActive        Boolean   @default(true)
-  
-  @@unique([roomNumber, floor, building])
-  
-}
-
-// teacher subjects
-model subject{
-  subject_name  String @unique @id
-  subject_code   Int
-  teacher       teacher[]
-  class_subject  class_subject[]
-  
-}
-
-//classes 1-10
-model classes{
-  class_id  Int @unique @id
-  class_name String
-  description String @db.Text
-  level      Level   
-  sections sections[]
-  subjects  class_subject[]
-}
-//class subject
-model class_subject{
-  subject_name    String    
-  class_id      Int
-  description   String @db.Text
-  class         classes  @relation(fields: [class_id],references: [class_id],onDelete: Cascade)
-  subject       subject @relation(fields: [subject_name],references: [subject_name],onDelete: Cascade)
-  section_subjects    section_subject[]
-  @@id([subject_name,class_id])
-  @@unique([subject_name,class_id])
-}
-
-// section of each class
-model sections{
-  section_id String @id @default(uuid())
-  section_name String
-  class_id    Int 
-  academic_year Int 
-  room_number  Int
-  class_teacher  Int
-  index      Int @default(0)
-  teacher    teacher? @relation(fields: [class_teacher],references: [teacher_id],onDelete: Cascade)
-  class      classes  @relation(fields: [class_id],references: [class_id],onDelete: Cascade)
-  students   student[]
-  exams      exam[]
-  section_subjects  section_subject[]
-  attendance    student_attendance[]
-  maximum_student Int @default(50)
-  createdAt    DateTime @default(now())
-  @@unique([section_name,class_id,academic_year])
-  @@unique([room_number,academic_year])
-  @@unique([class_teacher,academic_year])
-}
-
-// section subject of the class
-model section_subject {
-class_id      Int
-subject_name     String 
-section_id     String 
-teacher_id     Int
-class_subjects class_subject @relation(fields: [subject_name,class_id],references: [subject_name,class_id],onDelete: Cascade)
-section        sections @relation(fields: [section_id],references: [section_id] ,onDelete: Cascade)
-teachers       teacher @relation(fields: [teacher_id],references: [teacher_id] ,onDelete: Cascade)
-schedules      section_subject_schedule[]
-exams          exam_subjects[]
-@@id([subject_name,section_id])
-
-}
-
-model section_subject_schedule{
-  schedule_id    String @id @default(uuid())
-  subject_name     String
-  section_id     String
-  subject        section_subject @relation(fields: [subject_name,section_id],references: [subject_name,section_id],onDelete: Cascade)
-  timeslot_id    String
-  timeslot       timeslot @relation(fields: [timeslot_id],references: [id],onDelete: Cascade)
-  teacher_id     Int
-  teacher        teacher @relation(fields: [teacher_id],references: [teacher_id],onDelete: Cascade)
-  academic_year   Int @default(2024)
-  @@unique([subject_name,section_id,timeslot_id,teacher_id])
-  @@unique([timeslot_id,teacher_id,academic_year])
-}
-
-model timeslot{
-  id    String @id @default(uuid())
-  schedules  section_subject_schedule[]
-  hour         Int
-  day            DayOfWeek
-  type           PeriodType @default(REGULAR)
   
 }
 
@@ -120,211 +17,85 @@ model user{
     status        UserStatus @default(ACTIVE)
     img           String?
     lastLogin     DateTime?
-    teacherProfile teacher?
     studentProfile student?
     phone           String
     address         String
-    student_attendance_mark   student_attendance[]
     createdAt     DateTime  @default(now())
     updatedAt     DateTime  @updatedAt
 }
 
 
-model teacher {
-  first_name    String
-  last_name     String
-  abbreviation  String
-  teacher_id      Int @unique
-  teacher        user @relation(fields: [teacher_id],references: [id],onDelete: Cascade)
-  subject_name      String
-  subject        subject @relation(fields: [subject_name],references: [subject_name],onDelete: Cascade)
-  degrees        Degree @default(BBA)
-  class_teacher  sections[]
-  rank            Rank 
-  level            Level
-  leaves         TeacherLeave[]
-  attendance     teacher_attendance[]
-  enrolled_subjects  section_subject[]
-  schedules     section_subject_schedule[]
-  salary         Int @default(25000)
-  @@id([teacher_id,subject_name])
-}
-
 model student{
-first_name    String
-last_name     String
-student_id Int @unique @id
-student_id_str  String
-student     user @relation(fields: [student_id],references: [id],onDelete: Cascade)
-section_id   String
-dob          DateTime
-level        Level
-section     sections @relation(fields: [section_id],references: [section_id],onDelete: Cascade)
-attendance   student_attendance[]
-exam_result   exam_result[]
-subject_marks  subject_marks[]
-attendance_summery   attendance_summery[]
+  id              Int      @id @default(autoincrement())
+  first_name      String?
+  last_name       String?
+  matricNumber    String   @unique
+  user            user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          Int      @unique
+  dob             DateTime?
+  department      String?
+  level           Level?
+  bedspace        Bedspace?
+  profileComplete Boolean  @default(false)
 
-}
-
-model TeacherLeave {
-  id          String   @id @default(cuid())
-  teacher_id   Int
-  teacher     teacher  @relation(fields: [teacher_id], references: [teacher_id],onDelete: Cascade)
-  startDate   DateTime
-  endDate     DateTime
-  type        LeaveType
-  status      LeaveStatus @default(PENDING)
-  reason      String @db.Text
-}
-
-
-model student_attendance {
-  id              String            @id @unique @default(cuid())
-  student_id       Int
-  student         student          @relation(fields: [student_id], references: [student_id],onDelete: Cascade)
-  sectionId       String
-  section         sections          @relation(fields: [sectionId], references: [section_id],onDelete: Cascade)
-  date            DateTime
-  year            Int  @default(2024)
-  month           Int @default(11)
-  status          AttendanceStatus
-  timeIn          DateTime?
-  timeOut         DateTime?
-  lateMinutes     Int?            // If late, how many minutes
-  markedById      Int          // Teacher/Staff who marked attendance
-  markedBy        user            @relation(fields: [markedById], references: [id],onDelete: Cascade)
-  remarks         String?
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  @@unique([student_id, date])
-  @@index([date, status])
-  @@index([student_id, status])
-}
-
-model teacher_attendance {
-  id              String           @id @default(cuid())
-  teacherId       Int              
-  teacher         teacher          @relation(fields: [teacherId], references: [teacher_id],onDelete: Cascade)
-  date            DateTime
-  status          AttendanceStatus
-  year            Int  @default(2024)
-  month           Int @default(11)
-  timeIn          DateTime?
-  timeOut         DateTime?
-  lateMinutes     Int? 
-  substitutedBy   Int?            // If another teacher covered
-  remarks         String?
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-
-  @@unique([teacherId, date])
-  @@index([date, status])
-}
-
-model attendance_summery {
-
-  id              String    @id @default(cuid())
-  student_id       Int
-  student         student   @relation(fields: [student_id], references: [student_id],onDelete: Cascade)
-  academicYear    Int
-  month           Int
-  totalDays       Int
-  presentDays     Int
-  absentDays      Int
-  lateDays        Int
-  excusedDays     Int
-  leavesDays      Int
-  attendancePercentage Float
-  lastCalculated  DateTime
-  
-  @@unique([student_id, academicYear, month])
-}
-
-model attendance_policy {
-  id                    String    @id @default(cuid())
-  academicYear          Int
-  requiredAttendance    Float     // Percentage required
-  lateGracePeriod      Int       // Minutes
-  autoMarkAbsentAfter   Int       // Minutes
-  countLateAsHalfDay    Int       // Number of lates to count as half day
-  countLateAsAbsent     Int       // Number of lates to count as absent
-  createdAt            DateTime   @default(now())
-  updatedAt            DateTime   @updatedAt
-}
-
-
-
-//exam
-model exam {
-  id String  @id @default(uuid())
-  type EXAM_TYPE
-  section_id   String
-  section      sections @relation( fields: [section_id],references: [section_id],onDelete: Cascade)
-  start_date   DateTime
-  end_date     DateTime
-  exam_results  exam_result[]
-  exam_subjects  exam_subjects[]
-  publish_status  PublishStatus @default(DRAFT)
-  createdAt     DateTime   @default(now())
-}
-
-// exam subject 
-model exam_subjects{
-  id            String    @id @default(uuid())
-  exam_id       String
-  exam           exam @relation(fields: [exam_id],references: [id],onDelete: Cascade)
-  subject_name    String
-  section_id     String
-  subject       section_subject @relation(fields: [subject_name,section_id],references: [subject_name,section_id],onDelete: Cascade) 
-  max_mark      Float
-  passing_mark  Float
-  weigtage      Float
-  subject_marks  subject_marks[]
-}
-
-//  subject mark of student 
-model subject_marks{
-  id String  @id @default(uuid())
-  exam_subject_id   String
-  exam_subject     exam_subjects @relation(fields: [exam_subject_id],references: [id],onDelete: Cascade)
-  student_id        Int
-  student           student @relation(fields: [student_id],references: [student_id],onDelete: Cascade)
-  obtained_marks  Float
-  percentage Float
-  grade String
-  practical_marks  Float?
-  theory_mark  Float?
-  assignment_mark Float?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  @@unique([exam_subject_id,student_id])
-}
-
-
-//overall exam result  of each student
-
-model exam_result {
-  id            String    @id @default(cuid())
-  examId        String
-  exam          exam      @relation(fields: [examId], references: [id], onDelete: Cascade)
-  student_id     Int
-  student       student   @relation(fields: [student_id], references: [student_id],onDelete: Cascade)
-  totalObtainedMarks Float
-  totalMarks         Float
-  gpa               Float
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  @@unique([examId, student_id])
 }
 
 
 model Notice {
   id            String    @id @default(cuid())
-  title         String
-  filePathName  String
+  headline      String
+  subhead       String?
+  body          String
+  ps            String?
+  imageUrl      String?
+  fileUrl       String?
   type          NoticeType
+  visibleToManagers Boolean @default(false)
+  visibleToPorters  Boolean @default(false)
+  visibleToStudents Boolean @default(false)
   createdAt     DateTime  @default(now())
+}
+
+model Hostel {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  address   String?
+  blocks    Block[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Block {
+  id        String   @id @default(uuid())
+  name      String
+  hostelId  String
+  hostel    Hostel   @relation(fields: [hostelId], references: [id], onDelete: Cascade)
+  rooms     HostelRoom[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HostelRoom {
+  id        String   @id @default(uuid())
+  roomNumber String
+  capacity  Int      @default(4)
+  blockId   String
+  block     Block    @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  bedspaces Bedspace[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Bedspace {
+  id        String   @id @default(uuid())
+  number    String
+  roomId    String
+  room      HostelRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  studentId Int?     @unique
+  student   student? @relation(fields: [studentId], references: [id])
+  isOccupied Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Authority{
@@ -367,10 +138,9 @@ enum AttendanceStatus {
 
 // Enum for notice types (e.g., general announcements, events, assignments, etc.)
 enum NoticeType {
-  ACADEMIC
-  EXAMINATION
-  ADMINISTRATIVE
-  EVENT
+  UNIVERSITY
+  HOSTEL
+  INFORMAL
 }
 
 // Enum to define the target audience for the notice
@@ -386,18 +156,6 @@ enum GENDER {
   FEMALE
 }
 
-
-enum RoomType {
-  CLASSROOM
-  LABORATORY
-  LIBRARY
-  COMPUTER_LAB
-  MUSIC_ROOM
-  ART_ROOM
-  GYMNASIUM
-  AUDITORIUM
-}
-
 enum DayOfWeek {
   SATURDAY
   SUNDAY
@@ -407,44 +165,6 @@ enum DayOfWeek {
   THURSDAY
   FRIDAY
 }
-
-enum PeriodType {
-  REGULAR
-  LAB
-  ACTIVITY
-  BREAK
-  ASSEMBLY
-}
-
-enum Degree {
-  BSC
-  MSC
-  BBA
-}
-
-enum EXAM_TYPE {
-  MIDTERM
-  FINAL
-  QUIZ
-  ASSIGNMENT
-}
-
-enum PublishStatus {
-  DRAFT
-  PUBLISHED
-  ARCHIVED
-}
-
-enum LeaveType {
-  SICK_LEAVE
-  FAMILY_EMERGENCY
-  PLANNED_ABSENCE
-  SPORTS_ACTIVITY
-  ACADEMIC_ACTIVITY
-  OTHER
-}
-
-
 
 enum LeaveStatus {
   PENDING      // Initial state when leave is requested
@@ -460,9 +180,9 @@ enum LeaveStatus {
 
 enum UserRole {
     ADMIN
-    TEACHER
+    MANAGER
+    PORTER
     STUDENT
-    STAFF
   }
 
   enum UserStatus {
@@ -470,8 +190,3 @@ enum UserRole {
     INACTIVE
     SUSPENDED
   }
-
-enum Rank {
-  SENIOR
-  ASSISTANT
-}

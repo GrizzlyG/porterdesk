@@ -1,9 +1,7 @@
-import Schedules from "@/components/Schedules";
-import TeacherAttendenceList from "@/components/TeacherAttendence";
 import UserProfileCard from "@/components/UserProfileCard";
 import { get_student_info } from "@/lib/controller/get_students";
-import { MonthNames } from "@/lib/data";
 import NoticeCard from "../NoticeCard";
+import CompleteProfileForm from "../Forms/CompleteProfileForm";
 
 const StudentProfileCard = async ({
   role,
@@ -12,35 +10,26 @@ const StudentProfileCard = async ({
   role: string;
   id: number;
 }) => {
-  const { student, attendance, schedules, notices } = await get_student_info(
+  const { student, notices } = await get_student_info(
     id
   );
 
-  const getPresent = (
-    attendence: any[],
-    day: number,
-    month: number
-  ): boolean => {
-    const res = attendence.find(
-      (d) => d.date.getDate() === day && d.date.getMonth() == month
+  if (student && !student.studentProfile?.profileComplete) {
+    return (
+      <div className="p-6 max-w-4xl mx-auto">
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+          <div className="flex">
+            <div className="py-1">
+              <h3 className="font-bold text-yellow-800">Complete Your Profile</h3>
+              <p className="text-sm text-yellow-700 mt-1">Please fill out your details to access all features, including posting complaints.</p>
+            </div>
+          </div>
+        </div>
+        <div className="mt-6 bg-white p-8 rounded-lg shadow-md">
+          <CompleteProfileForm user={student} />
+        </div>
+      </div>
     );
-    if (res) {
-      return true;
-    }
-    return false;
-  };
-
-  let calendar: any[] = [];
-  const date = new Date();
-  for (let month = 0; month < 12; month++) {
-    const daysInMonth = new Date(date.getFullYear(), month + 1, 0).getDate();
-    let monthData: any = { Month: MonthNames[month] };
-    for (let day = 1; day <= daysInMonth; day++) {
-      const isPresent = getPresent(attendance!, day, month);
-      const dayObj = { [day]: isPresent };
-      monthData = { ...monthData, ...dayObj };
-    }
-    calendar.push(monthData);
   }
 
   return (
@@ -55,17 +44,6 @@ const StudentProfileCard = async ({
             </h1>
             <UserProfileCard user={student!} />
           </div>
-        </div>
-        {/* Routine */}
-        <div className="p-4">
-          <h1 className="text-2xl font-semibold text-gray-800 mb-2">Routine</h1>
-          <Schedules role="STUDENT" schedules={schedules!} />
-        </div>
-        <div className="p-4">
-          <h1 className="text-2xl font-semibold text-gray-800 mb-2">
-            Attendance
-          </h1>
-          <TeacherAttendenceList attendanceData={calendar!} />
         </div>
       </div>
       {/* Right */}

@@ -1,9 +1,7 @@
 "use client";
 
-import { toast } from "@/hooks/use-toast";
-
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { login } from "@/lib/actions/auth";
+import { useFormState, useFormStatus } from "react-dom";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -13,39 +11,19 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import FormInput from "./FormInput";
+
+const LoginButton = () => {
+  const { pending } = useFormStatus();
+  return (
+    <Button disabled={pending} className="p-2 w-full" type="submit">
+      {pending ? "Logging in..." : "Login"}
+    </Button>
+  );
+};
+
 const SignInForm = () => {
-  const router = useRouter();
-  const [isLoaing, setIsLoading] = useState(false);
+  const [state, formAction] = useFormState(login, undefined);
 
-  const handleAction = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    setIsLoading(true);
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        body: JSON.stringify({
-          uid: formData.get("uid"),
-          password: formData.get("password"),
-        }),
-      });
-      const result = await response.json();
-
-      if (response.ok) {
-        if (result.role == "ADMIN") {
-          router.replace("/dashboard");
-        } else {
-          router.replace("/profile");
-        }
-      }
-      if (result.error) {
-        toast({ title: "Invalid Credential", variant: "destructive" });
-      }
-    } catch (error) {
-    } finally {
-      setIsLoading(false);
-    }
-  };
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -54,15 +32,22 @@ const SignInForm = () => {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
-        <DialogTitle className="text-center text-2xl">Sign In Form</DialogTitle>
-        <DialogDescription> {}</DialogDescription>
-        <form className="w-full" onSubmit={handleAction}>
+        <DialogTitle className="text-center text-2xl">Sign In</DialogTitle>
+        <DialogDescription>
+          Enter your Matric Number or Email to login.
+        </DialogDescription>
+        <form className="w-full space-y-4" action={formAction}>
+          {state?.error && (
+            <p className="text-sm text-red-500 bg-red-50 p-3 rounded-md">
+              {state.error}
+            </p>
+          )}
           <div className="p-2">
             <FormInput
-              type="texr"
-              name="uid"
+              type="text"
+              name="identifier"
               width="w-full"
-              label="UID"
+              label="Matric No / Email"
               required={true}
             />
           </div>
@@ -76,9 +61,7 @@ const SignInForm = () => {
             />
           </div>
 
-          <Button disabled={isLoaing} className="p-2 w-full" type="submit">
-            {isLoaing ? "Loading..." : "Login"}
-          </Button>
+          <LoginButton />
         </form>
       </DialogContent>
     </Dialog>

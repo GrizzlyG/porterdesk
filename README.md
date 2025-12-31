@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # School Management System
 
 **If You get any Problem on main Branch clone dev1 branch**
@@ -75,3 +76,7 @@ npm run dev
 <img src="./imgs/9.png">
 <img src="./imgs/10.png">
 </div>
+=======
+# porterdesk
+Porter Assisstant software
+>>>>>>> d0a630f34b2db6a382beb57f5b58a48d2cad3801

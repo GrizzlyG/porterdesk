@@ -3,7 +3,6 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 import StudentProfileCard from "@/components/profile/StudentProfileCard";
-import TeacherProfileCard from "@/components/profile/TeacherProfileCard";
 
 const ProfilePage = async () => {
   const session = cookies().get("__session")?.value;
@@ -24,9 +23,6 @@ const ProfilePage = async () => {
 
   if (user.role === "STUDENT") {
     return <StudentProfileCard role="STUDENT" id={uid} />;
-  }
-  if (user.role === "TEACHER") {
-    return <TeacherProfileCard id={uid} />;
   }
 
   notFound();

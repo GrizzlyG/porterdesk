@@ -4,6 +4,8 @@ import prisma from "@/lib/db";
 import { Building, MapPin } from "lucide-react";
 import Link from "next/link";
 
+export const dynamic = 'force-dynamic';
+
 const BuildingsPage = async () => {
   const hostels = await prisma.hostel.findMany({
     include: {

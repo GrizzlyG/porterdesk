@@ -1,6 +1,8 @@
 import BlockConfigurator from "@/components/BlockConfig/BlockConfigurator";
 import prisma from "@/lib/db";
 
+export const dynamic = 'force-dynamic';
+
 const BlockConfigPage = async () => {
   const hostels = await prisma.hostel.findMany({
     include: {

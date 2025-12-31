@@ -2,6 +2,8 @@ import StaffForm from "@/components/Forms/StaffForm";
 import prisma from "@/lib/db";
 import { UserRole } from "@prisma/client";
 
+export const dynamic = 'force-dynamic';
+
 const StaffPage = async () => {
   const staff = await prisma.user.findMany({
     where: {

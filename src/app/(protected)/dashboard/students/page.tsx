@@ -2,6 +2,8 @@ import StudentForm from "@/components/Forms/StudentForm";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
 import prisma from "@/lib/db";
 
+export const dynamic = 'force-dynamic';
+
 const StudentsPage = async () => {
   const students = await prisma.student.findMany({
     include: {

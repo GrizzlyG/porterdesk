@@ -1,0 +1,192 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  
+}
+
+model user{
+    id            Int    @id @unique @default(autoincrement())
+    email         String    @unique
+    password      String
+    role          UserRole
+    sex           GENDER 
+    status        UserStatus @default(ACTIVE)
+    img           String?
+    lastLogin     DateTime?
+    studentProfile student?
+    phone           String
+    address         String
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+}
+
+
+model student{
+  id              Int      @id @default(autoincrement())
+  first_name      String?
+  last_name       String?
+  matricNumber    String   @unique
+  user            user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          Int      @unique
+  dob             DateTime?
+  department      String?
+  level           Level?
+  bedspace        Bedspace?
+  profileComplete Boolean  @default(false)
+
+}
+
+
+model Notice {
+  id            String    @id @default(cuid())
+  headline      String
+  subhead       String?
+  body          String
+  ps            String?
+  imageUrl      String?
+  fileUrl       String?
+  type          NoticeType
+  visibleToManagers Boolean @default(false)
+  visibleToPorters  Boolean @default(false)
+  visibleToStudents Boolean @default(false)
+  createdAt     DateTime  @default(now())
+}
+
+model Hostel {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  address   String?
+  blocks    Block[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Block {
+  id        String   @id @default(uuid())
+  name      String
+  hostelId  String
+  hostel    Hostel   @relation(fields: [hostelId], references: [id], onDelete: Cascade)
+  rooms     HostelRoom[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HostelRoom {
+  id        String   @id @default(uuid())
+  roomNumber String
+  capacity  Int      @default(4)
+  blockId   String
+  block     Block    @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  bedspaces Bedspace[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Bedspace {
+  id        String   @id @default(uuid())
+  number    String
+  roomId    String
+  room      HostelRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  studentId Int?     @unique
+  student   student? @relation(fields: [studentId], references: [id])
+  isOccupied Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Authority{
+  id            String  @id @default(cuid())
+  fullName   String
+  phone      String
+  type       AuthorityType
+  message    String  @db.Text
+  createdAt  DateTime  @default(now())
+
+  
+}
+
+enum AuthorityType {
+  PRINCIPAL
+  VICE_PRINCIPAL
+  ADMINISTRATOR
+  PRESIDENT
+  DIRECTOR
+  MANAGER
+  SUPERVISOR
+  COORDINATOR
+
+}
+
+
+enum Level {
+  PRIMARY
+  SECONDARY
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  HALF_DAY
+  EXCUSED
+  ON_LEAVE
+}
+
+// Enum for notice types (e.g., general announcements, events, assignments, etc.)
+enum NoticeType {
+  UNIVERSITY
+  HOSTEL
+  INFORMAL
+}
+
+// Enum to define the target audience for the notice
+enum AudienceType {
+  ALL            // Notice for the whole school
+  STAFF          // Notice for all staff members
+  STUDENTS       // Notice for all students
+  
+}
+
+enum GENDER {
+  MALE
+  FEMALE
+}
+
+enum DayOfWeek {
+  SATURDAY
+  SUNDAY
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+}
+
+enum LeaveStatus {
+  PENDING      // Initial state when leave is requested
+  APPROVED     // Leave approved by authority
+  REJECTED     // Leave request denied
+  CANCELLED    // Leave cancelled by teacher
+  PARTIALLY_APPROVED  // Approved with modified dates
+  ON_HOLD     // Need more information/documentation
+  IN_PROGRESS  // Currently on leave
+  COMPLETED    // Leave period completed
+  EXPIRED      // Approved but not taken
+}
+
+enum UserRole {
+    ADMIN
+    MANAGER
+    PORTER
+    STUDENT
+  }
+
+  enum UserStatus {
+    ACTIVE
+    INACTIVE
+    SUSPENDED
+  }

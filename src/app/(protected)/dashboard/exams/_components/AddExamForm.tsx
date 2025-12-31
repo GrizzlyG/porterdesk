@@ -6,7 +6,7 @@ import FormModal from "@/components/Forms/FormModal";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
-import { add_exam_by_admin } from "@/lib/actions/exam";
+// ...existing code...
 import { useRef, useState } from "react";
 
 const AddExamForm = ({ classData }: { classData: Classes[] }) => {

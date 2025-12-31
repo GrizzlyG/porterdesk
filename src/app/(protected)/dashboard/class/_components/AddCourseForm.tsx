@@ -2,7 +2,7 @@
 import FormModal from "@/components/Forms/FormModal";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { add_subject_to_class_action } from "@/lib/actions/class";
+// ...existing code...
 import { useRef, useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
 

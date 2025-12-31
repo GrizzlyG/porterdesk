@@ -1,0 +1,32 @@
+Unmatched records from matric pair (Students without rooms):
+
+- Lawal, Abdulmuiz Akolade, 202551790045BF, Nursing, 8069715276, 7/17, 2007
+- Bakare, Tunmishe Muiz, 24/56ED047, Physics, 7045008820, 1/5, 2009
+- ORENIBI, ENIOLAMIDE EMMANUEL, 24/30GR097, COMPUTER ENGINEERING, 9013406663, 3/16, 2006
+- David, Prince, 202550155482HF, Art, 7085794727, 9/21, 2006
+
+
+Unmatched records from room number sheet (Rooms without matching student record):
+
+- ajelaraawwal2@gmail.com, Ajelara, Al-Awwal Seye, 202551929889JA, 8124774077, ₦196,000, B2
+- adesinaope2909@gmail.com, Adesina, Opeyemi Sakariyau, 202551248363HA, 7045008820, ₦196,000, B5
+- moyosore.uademola@gmail.com, , , , , ₦196,000, D14
+- , , , ABDULFATAI RIDWAN (21/30GD095), , ₦196,000, D16
+- mogajifawaz2525@gmail.com, , , , , ₦196,000, D20
+- gbengaadewumi56@gmail.com, , , 20255044729DF, , ₦196,000, D22
+- joasaloba@gmail.com, ADEYEMI, IBUKUNOLUWA PELUMI, 202551592175DF, 7059771949, ₦196,000, E1
+- , , OLAWALE LOGISTICS, , , ₦196,000, E1
+- saadayomipo123@gmail.com, SAAD, Abdurahman Ayomipo, 202550025642EF, 8142469275, ₦196,000, E18
+- ALHAJI, , , ABDULMALIK AYOMIDE/ADETONA, , ₦196,000, F2
+- lastyisa@gmail.com, , , , , ₦196,000, F2
+- ALHAJI BARUWA, , , INTERNATIONAL STUDENT, , ₦196,000, F5
+- , , , , , , 
+- , , , OMOTOSHO AYOMIDE SAMSON, , ₦196,000, F10
+- ALHAJI, , , SULAIMAN YEKEEN ADEBAYO, , ₦196,000, G1
+- lekandan07@gmail.com, , , , , ₦196,000, G1
+- , , , MUHAMMED ABDULRAHMAN OLAMILEKAN, , ₦196,000, G3
+- , , , OGUNMUYIWA ABDULLATEEF AYODEJI, , ₦196,000, G19
+- ecklusonadj@gmail.com, Adoungotchodo, Eckluson Adjrosse, , 8158659778, ₦196,000, H1
+- , , , 24/56EF069, , ₦196,000, H1
+- , , , ADEOYE EXCELLENCE, , ₦196,000, H2
+- , , INTERNATIONAL STUDENT 2, , , ₦196,000, H20

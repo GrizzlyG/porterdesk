@@ -6,7 +6,7 @@ import { createSession } from "@/session";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export async function login(formData: FormData) {
+export async function login(prevState: any, formData: FormData) {
   const identifier = formData.get("identifier") as string;
   const password = formData.get("password") as string;
 
@@ -44,14 +44,13 @@ export async function login(formData: FormData) {
 
   // 4. Create session
   const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
-  const session = await createSession({
+
+  await createSession({
     id: user.id,
     email: user.email,
     role: user.role,
     fullName: user.studentProfile ? `${user.studentProfile.first_name} ${user.studentProfile.last_name}` : user.email,
   });
-
-  cookies().set("__session", session, { expires, httpOnly: true });
 
   // Redirect based on role
   if (user.role === "STUDENT") {

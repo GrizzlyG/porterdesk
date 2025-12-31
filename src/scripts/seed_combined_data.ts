@@ -69,7 +69,7 @@ async function main() {
     const surname = row[0]?.replace(/^"|"$/g, '').trim();
     const otherNames = row[1]?.replace(/^"|"$/g, '').trim();
     
-    let dept = row[3]?.replace(/^"|"$/g, '').trim();
+    let dept: string | undefined = row[3]?.replace(/^"|"$/g, '').trim();
     if (!dept) {
         dept = getDepartmentFromMatric(matric) || undefined;
     }

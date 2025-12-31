@@ -90,3 +90,5 @@ export async function removeStudent(formData: FormData) {
     return { success: false, message: "Failed to remove student" };
   }
 }
+
+export const addRoomAction = createRoom;

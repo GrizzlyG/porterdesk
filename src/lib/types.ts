@@ -68,6 +68,7 @@ export interface Student {
   dob?: Date | null;
   department?: string | null;
   level?: Level;
+  profileComplete?: boolean;
 }
 
 export interface User {

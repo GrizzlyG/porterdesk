@@ -1,8 +1,8 @@
 "use server";
 
-import { FilterOptions } from "@/lib/types";
+import { FilterOptions, Status, User } from "@/lib/types";
 import prisma from "../db";
-import { Status, User, UserRole } from "@prisma/client";
+import { UserRole } from "@prisma/client";
 
 type GetStudentReturnProps = {
   students?: User[];

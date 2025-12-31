@@ -19,7 +19,6 @@ const ProfilePage = async () => {
   if (!uid || isNaN(uid)) {
     notFound();
   }
-  // const { notices } = await get_notice(3);
 
   if (user.role === "STUDENT") {
     return <StudentProfileCard role="STUDENT" id={uid} />;

@@ -22,7 +22,7 @@ const LoginButton = () => {
 };
 
 const SignInForm = () => {
-  const [state, formAction] = useFormState(login, undefined);
+  const [state, formAction] = useFormState(login, { error: "" });
 
   return (
     <Dialog>

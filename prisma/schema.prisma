@@ -1,3 +1,12 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 model Complaint {
   id          Int      @id @default(autoincrement())
   title       String
@@ -6,14 +15,6 @@ model Complaint {
   createdAt   DateTime @default(now())
   studentId   Int
   student     student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
-}
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model user {
@@ -36,15 +37,15 @@ model student {
   first_name      String?
   last_name       String?
   dob             DateTime?
-  type            Type? @default(RESIDENT)
   department      String?
-  profileComplete Boolean   @default(false)
-  id              Int       @id @default(autoincrement())
-  matricNumber    String    @unique
-  userId          Int       @unique
+  id              Int         @id @default(autoincrement())
+  matricNumber    String      @unique
+  profileComplete Boolean     @default(false)
+  userId          Int         @unique
+  type            Type?       @default(RESIDENT)
   bedspace        Bedspace?
   complaints      Complaint[]
-  user            user      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user            user        @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Notice {

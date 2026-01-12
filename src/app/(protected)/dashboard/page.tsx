@@ -3,12 +3,12 @@ import { get_dashboard } from "@/lib/controller/get_dashboard";
 import { Status } from "@/lib/types";
 import { Users } from "lucide-react";
 import Link from "next/link";
-// import dynamic from "next/dynamic";
+import dynamic from "next/dynamic";
 
-// const HostelBarsOverview = dynamic(
-//   () => import("@/components/HostelBarsOverview"),
-//   { ssr: false }
-// );
+const HostelBarsOverview = dynamic(
+  () => import("../../../components/HostelBarsOverview").then(m => m.default),
+  { ssr: false }
+);
 
 const DashboardPage = async () => {
   const {
@@ -39,8 +39,8 @@ const DashboardPage = async () => {
         Dashboard Overview
       </h1>
 
+
       {/* Hostel bars overview (client component) */}
-      {/*
       {hostelsBarData && hostelsBarData.length > 0 && (
         <div className="my-8">
           <HostelBarsOverview
@@ -52,7 +52,6 @@ const DashboardPage = async () => {
           />
         </div>
       )}
-      */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
         <Link href={stats[0].href}>

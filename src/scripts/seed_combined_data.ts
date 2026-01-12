@@ -4,13 +4,7 @@ import path from 'path';
 import bcrypt from 'bcrypt';
 import { getDepartmentFromMatric } from '../lib/department_mapping';
 
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: "prisma+postgres://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqd3RfaWQiOjEsInNlY3VyZV9rZXkiOiJza19qOEJxQXdJU24wNGRyVDl4UzhCMnMiLCJhcGlfa2V5IjoiMDFLRFRQRUhWVDMwUThSUlFHVEdSVDZURlkiLCJ0ZW5hbnRfaWQiOiI1YjQyZjE0MzU4ODIwYjQ1YTBiNDU5NzBjNTMzODYyYTgyYzFlODg4Nzg0MzgwM2U1ZGM4YmI5ZGM2MjU1MzBmIiwiaW50ZXJuYWxfc2VjcmV0IjoiNjRkMzgyYTAtYTQ3YS00M2FmLWExYzctYWZkOWNhMTk3YWM4In0.ouk8CutLPJbxm2ASdNs_W3q4cvIv2MhD9JJ3By-Usao",
-    },
-  },
-});
+const prisma = new PrismaClient();
 
 function parseCSV(text: string): string[][] {
   const result: string[][] = [];
@@ -55,6 +49,8 @@ async function main() {
   if (!hostel) {
     hostel = await prisma.hostel.create({ data: { name: hostelName, address: "Main Campus" } });
     console.log(`Created hostel: ${hostelName}`);
+  } else {
+    console.log(`Using existing hostel: ${hostelName}`);
   }
 
   const csvPath = path.join(process.cwd(), 'combined_list.csv');
@@ -97,40 +93,42 @@ async function main() {
     // Check if student already exists
     const existingStudent = await prisma.student.findUnique({ where: { matricNumber: matric } });
     if (existingStudent) {
-        console.log(`Skipping existing student: ${matric}`);
-        continue;
+      console.log(`[SKIP] Student already exists: ${matric}`);
+      continue;
     }
 
     const hashedPassword = await bcrypt.hash(phone, 10);
     // Create unique email based on matric to satisfy User schema
-    const email = `student${matric.replace(/[^a-zA-Z0-9]/g, '')}@arafims.com`;
+    const email = `${matric.replace(/[^a-zA-Z0-9]/g, '')}@arafims.com`;
 
     try {
-        const newUser = await prisma.user.create({
-            data: {
-                email: email,
-                password: hashedPassword,
-                role: UserRole.STUDENT,
-                sex: GENDER.MALE, // Defaulting to Male as gender isn't in CSV
-                status: UserStatus.ACTIVE,
-                phone: phone,
-                address: "",
-                studentProfile: {
-                    create: {
-                        first_name: otherNames,
-                        last_name: surname,
-                        matricNumber: matric,
-                        department: dept,
-                        dob: dob,
-                        type: Type.RESIDENT,
-                        profileComplete: true
-                    }
-                }
-            },
-            include: { studentProfile: true }
-        });
+      console.log(`[CREATE] Student: ${matric}, Name: ${surname} ${otherNames}, Dept: ${dept}, Room: ${roomStr}`);
+      const newUser = await prisma.user.create({
+        data: {
+          email: email,
+          password: hashedPassword,
+          role: UserRole.STUDENT,
+          sex: GENDER.MALE, // Defaulting to Male as gender isn't in CSV
+          status: UserStatus.ACTIVE,
+          phone: phone,
+          address: "",
+          studentProfile: {
+            create: {
+              first_name: otherNames,
+              last_name: surname,
+              matricNumber: matric,
+              department: dept,
+              dob: dob,
+              type: Type.RESIDENT,
+              profileComplete: true
+            }
+          }
+        },
+        include: { studentProfile: true }
+      });
 
-        const studentId = newUser.studentProfile?.id;
+      const studentId = newUser.studentProfile?.id;
+      console.log(`[SUCCESS] Created student: ${matric}`);
 
         // Assign Room if provided
         if (roomStr && roomStr.length > 1 && studentId) {
@@ -139,31 +137,40 @@ async function main() {
 
             // Ensure Block exists
             let block = await prisma.block.findFirst({
-                where: { hostelId: hostel!.id, name: blockName }
+              where: { hostelId: hostel!.id, name: blockName }
             });
             if (!block) {
-                block = await prisma.block.create({ data: { name: blockName, hostelId: hostel!.id } });
+              block = await prisma.block.create({ data: { name: blockName, hostelId: hostel!.id } });
+              console.log(`[CREATE] Block: ${blockName}`);
+            } else {
+              console.log(`[EXIST] Block: ${blockName}`);
             }
 
             // Ensure Room exists
             let room = await prisma.hostelRoom.findFirst({
-                where: { blockId: block.id, roomNumber: roomNum }
+              where: { blockId: block.id, roomNumber: roomNum }
             });
             if (!room) {
-                room = await prisma.hostelRoom.create({ data: { roomNumber: roomNum, blockId: block.id, capacity: 4 } });
-                // Create 4 Bedspaces for the new room
-                const bedspacesData = Array.from({ length: 4 }, (_, i) => ({
-                    number: `${roomNum}-${String.fromCharCode(65 + i)}`,
-                    roomId: room!.id,
-                }));
-                await prisma.bedspace.createMany({ data: bedspacesData });
+              room = await prisma.hostelRoom.create({ data: { roomNumber: roomNum, blockId: block.id, capacity: 4 } });
+              console.log(`[CREATE] Room: ${roomNum} in Block: ${blockName}`);
+              // Create 4 Bedspaces for the new room
+              const bedspacesData = Array.from({ length: 4 }, (_, i) => ({
+                number: `${roomNum}-${String.fromCharCode(65 + i)}`,
+                roomId: room!.id,
+              }));
+              await prisma.bedspace.createMany({ data: bedspacesData });
+              console.log(`[CREATE] Bedspaces for Room: ${roomNum}`);
+            } else {
+              console.log(`[EXIST] Room: ${roomNum} in Block: ${blockName}`);
             }
 
             // Find first empty bedspace
             const bedspace = await prisma.bedspace.findFirst({ where: { roomId: room.id, isOccupied: false } });
             if (bedspace) {
-                await prisma.bedspace.update({ where: { id: bedspace.id }, data: { isOccupied: true, studentId: studentId } });
-                console.log(`Assigned ${matric} to ${blockName}-${roomNum}`);
+              await prisma.bedspace.update({ where: { id: bedspace.id }, data: { isOccupied: true, studentId: studentId } });
+              console.log(`[ASSIGN] ${matric} to ${blockName}-${roomNum}`);
+            } else {
+              console.log(`[FULL] No available bedspace for ${matric} in ${blockName}-${roomNum}`);
             }
         }
     } catch (e) {

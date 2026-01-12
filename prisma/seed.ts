@@ -41,31 +41,28 @@ async function main() {
   console.log(`Admin Password: ${adminPlainPassword}`);
   console.log('-----------------------------------');
 
-  // Create Student User with Student Profile
-  const studentPassword = await bcrypt.hash('student123', 10);
-  const studentUser = await prisma.user.upsert({
-    where: { email: 'student@arafims.com' },
-    update: {},
-    create: {
-      email: 'student@arafims.com',
-      password: studentPassword,
-      role: UserRole.STUDENT,
-      sex: GENDER.MALE,
-      status: UserStatus.ACTIVE,
-      phone: '2222222222',
-      address: 'Student Address',
-      studentProfile: {
-        create: {
-          matricNumber: 'S3001',
-          first_name: 'John',
-          last_name: 'Smith',
-          dob: new Date('2010-01-01'),
-          type: Type.RESIDENT,
-        },
+    // Create Production Admin User
+    const admin1PlainPassword = Array(4).fill(0).map(() => Math.random().toString(36).slice(-8)).join('');
+    const admin1Password = await bcrypt.hash(admin1PlainPassword, 12);
+    const admin1 = await prisma.user.upsert({
+      where: { email: 'admin1@arafims.com' },
+      update: {},
+      create: {
+        email: 'admin1@arafims.com',
+        password: admin1Password,
+        role: UserRole.ADMIN,
+        sex: GENDER.MALE,
+        status: UserStatus.ACTIVE,
+        phone: '0000000001',
+        address: 'Production Admin',
       },
-    },
-  });
-  console.log('Created student user:', studentUser);
+    });
+    console.log('Created production admin user:', admin1);
+    console.log('-----------------------------------');
+    console.log(`Admin Email: admin1@arafims.com`);
+    console.log(`Admin Password: ${admin1PlainPassword}`);
+    console.log('-----------------------------------');
+
 
   console.log('Seeding finished.');
 }

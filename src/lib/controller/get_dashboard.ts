@@ -6,6 +6,7 @@ type HostelBarData = {
   name: string;
   blockCount: number;
   studentCount: number;
+  bedspaceCount: number;
 };
 
 type DasboardRetrunProps = {
@@ -63,13 +64,15 @@ export async function get_dashboard(): Promise<DasboardRetrunProps> {
       }),
     ]);
 
-    // Map hostelsBarDataRaw to { id, name, blockCount, studentCount }
+    // Map hostelsBarDataRaw to { id, name, blockCount, studentCount, bedspaceCount }
     const hostelsBarData: HostelBarData[] = hostelsBarDataRaw.map(
       (hostel: any) => {
         let studentCount = 0;
+        let bedspaceCount = 0;
         hostel.blocks.forEach((block: any) => {
           block.rooms?.forEach((room: any) => {
             room.bedspaces?.forEach((bed: any) => {
+              bedspaceCount++;
               if (bed.student) studentCount++;
             });
           });
@@ -79,6 +82,7 @@ export async function get_dashboard(): Promise<DasboardRetrunProps> {
           name: hostel.name,
           blockCount: hostel.blocks.length,
           studentCount,
+          bedspaceCount,
         };
       }
     );

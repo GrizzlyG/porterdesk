@@ -8,20 +8,20 @@ export type HostelBarData = {
   name: string;
   blockCount: number;
   studentCount: number;
+  bedspaceCount: number;
 };
 
 interface HostelBarsOverviewProps {
   hostels: HostelBarData[];
-  maxStudents: number;
 }
 
-export default function HostelBarsOverview({ hostels, maxStudents }: HostelBarsOverviewProps) {
+export default function HostelBarsOverview({ hostels }: HostelBarsOverviewProps) {
   return (
     <Card className="p-6">
       <h2 className="text-lg font-bold mb-4">Hostel Occupancy Overview</h2>
       <div className="space-y-6">
         {hostels.map((hostel) => {
-          const percent = maxStudents > 0 ? Math.round((hostel.studentCount / maxStudents) * 100) : 0;
+          const percent = hostel.bedspaceCount > 0 ? Math.round((hostel.studentCount / hostel.bedspaceCount) * 100) : 0;
           return (
             <div key={hostel.id} className="flex items-center space-x-4">
               <div className="relative flex items-center">
@@ -46,7 +46,7 @@ export default function HostelBarsOverview({ hostels, maxStudents }: HostelBarsO
                 </div>
               </div>
               <div className="ml-2 text-xs text-gray-700">
-                {hostel.studentCount} students ({percent}%)
+                {hostel.studentCount} students / {hostel.bedspaceCount} bedspaces ({percent}%)
               </div>
             </div>
           );

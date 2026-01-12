@@ -45,10 +45,6 @@ const DashboardPage = async () => {
         <div className="my-8">
           <HostelBarsOverview
             hostels={hostelsBarData}
-            maxStudents={Math.max(
-              ...hostelsBarData.map((h) => h.studentCount),
-              1
-            )}
           />
         </div>
       )}

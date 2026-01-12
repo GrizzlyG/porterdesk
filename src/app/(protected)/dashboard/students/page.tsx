@@ -31,8 +31,9 @@ const StudentsPage = async ({ searchParams }: { searchParams?: { status?: string
         <a href="?status=approved" className={`px-3 py-1 rounded ${statusFilter === "approved" ? "bg-green-600 text-white" : "bg-gray-200"}`}>Approved</a>
         <a href="?status=pending" className={`px-3 py-1 rounded ${statusFilter === "pending" ? "bg-yellow-500 text-white" : "bg-gray-200"}`}>Pending Approval</a>
       </div>
-      <div className="bg-white shadow rounded-lg overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
+      <div className="bg-white shadow rounded-lg">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Matric No</th>
@@ -103,7 +104,8 @@ const StudentsPage = async ({ searchParams }: { searchParams?: { status?: string
               </tr>
             )}
           </tbody>
-        </table>
+          </table>
+        </div>
       </div>
     </div>
   );

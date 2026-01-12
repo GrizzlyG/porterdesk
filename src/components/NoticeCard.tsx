@@ -5,7 +5,7 @@ const NoticeCard = ({ notice, userRole }: { notice: Notice, userRole?: UserRole 
   return (
     <div
       key={notice.id}
-      className="p-4 border border-gray-200 rounded-md"
+      className="p-4 border border-gray-200 rounded-md bg-white"
     >
       <div className="flex items-start justify-between">
         <div>

@@ -2,10 +2,10 @@ export const role = "admin";
 export const NO_AVATAR_URL = "/image/noavatar.png";
 export const SCHOOL_LOGO = "/image/school-logo.png";
 export const ITEM_PAR_PAGE = 10;
-export const SITE_NAME = "Arafims Hostel Management System";
+export const SITE_NAME = "ARAFIMS Hostel Management System";
 export const SITE_URL = "http://localhost:3000";
-export const SITE_TITLE = "Arafims Hostel Network Management System";
-export const SITE_DESCRIPTION = "Arafims Hostel Management System";
+export const SITE_TITLE = "ARAFIMS Hostel Network Management System";
+export const SITE_DESCRIPTION = "ARAFIMS Hostel Management System";
 export const SITE_IMAGE = "/image/logo.png";
 export const SITE_AUTHOR = "Arafims Hostel Network Management System";
 export const SITE_TWITTER = "@ahn";
@@ -16,17 +16,15 @@ export const SITE_PHONE = "123456789";
 export const SITE_EMAIL = "ahn@arafims.com";
 export const SITE_ADDRESS = "Ilorin, Nigeria";
 export const SITE_FAX = "123456789";
-export const SITE_COPYRIGHT = "Arafims Hostel Network Management System";
-export const SITE_POWERED_BY = "Arafims Hostel Network Management System";
-export const SCHOOL_NAME = "Arafims Hostel Network Management System";
+export const SITE_COPYRIGHT = "ARAFIMS Hostel Network Management System";
+export const SITE_POWERED_BY = "ARAFIMS Hostel Network Management System";
+export const SCHOOL_NAME = "ARAFIMS Hostel Network Management System";
 export const SCHOOL_CODE = "123456";
 export const SCHOOL_EIIN = "EN23456";
 export const SCHOOL_MESSAGE = "Central platform for Managing Arafims Hostels";
 export const GENEREL_SESSION =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6IjEyMzQ1Njc4OTAiLCJuYW1lIjoiVXNlciIsImlhdCI6MTUxNjIzOTAyMn0.q2-bjp-bIbC1KcsegBorKoJvi6BU7tJOGfaLqLVIeT0";
-export const SCHOOL_INTRO = `Arafims Hostel Network Management System is a comprehensive platform designed to streamline the management of hostels within the Arafims educational institutions. 
-Our system offers a range of features to efficiently handle hostel operations, including student accommodation, fee management, maintenance requests, and communication between hostel staff and residents. 
-With a user-friendly interface and robust functionality, Arafims Hostel Network Management System aims to enhance the overall experience for both hostel administrators and students, ensuring a safe and comfortable living environment.
+export const SCHOOL_INTRO = `ARAFIMS Hostel Network Management System is a comprehensive platform designed to streamline the management of hostels within the Arafims educational institutions. 
 `;
 export const SCHOOL_SHORTNAME = "AHNMS";
 export const MonthNames = [

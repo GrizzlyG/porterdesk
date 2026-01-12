@@ -15,8 +15,6 @@ const Navbar = async () => {
       <nav className="bg-white/70 backdrop-blur-lg shadow-lg border-b border-green-200 px-4 md:px-10">
         <div className="max-w-screen-xl mx-auto flex flex-col py-2">
           <div className="flex flex-col items-center justify-center w-full mb-1">
-            <span className="text-base font-semibold text-green-800 tracking-wide">Arafims Hostel Network Management System</span>
-            <span className="text-xs text-green-600">Central platform for Managing Arafims Hostels</span>
           </div>
           <div className="flex flex-wrap items-center justify-between w-full">
             <div className="flex items-center gap-2">

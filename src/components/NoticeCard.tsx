@@ -15,7 +15,7 @@ const NoticeCard = ({ notice, userRole }: { notice: Notice, userRole?: UserRole 
           )}
         </div>
         <Link
-          className="text-blue-600"
+          className="text-green-700 hover:text-yellow-500"
           href={`/dashboard/notices/${notice.id}`}
         >
           View
@@ -26,7 +26,7 @@ const NoticeCard = ({ notice, userRole }: { notice: Notice, userRole?: UserRole 
           <span className="font-semibold text-gray-600">Visible to:</span>
           <div className="flex gap-2">
             {notice.visibleToManagers && <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded-full">Managers</span>}
-            {notice.visibleToPorters && <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Porters</span>}
+            {notice.visibleToPorters && <span className="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">Porters</span>}
             {notice.visibleToStudents && <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">Students</span>}
             {(!notice.visibleToManagers && !notice.visibleToPorters && !notice.visibleToStudents) && <span className="text-gray-400">None</span>}
           </div>

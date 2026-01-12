@@ -1,6 +1,6 @@
 import {
   PrismaClient,
-  Level,
+  Type,
   UserRole,
   GENDER,
   UserStatus,
@@ -13,17 +13,20 @@ async function main() {
   console.log('Start seeding ...');
 
   // Clean up database. Order is important to respect foreign key constraints.
-  await prisma.student.deleteMany({});
-  await prisma.user.deleteMany({});
+  // await prisma.student.deleteMany({});
+  // await prisma.user.deleteMany({});
 
-  console.log('Deleted existing data.');
+  // console.log('Deleted existing data.');
 
   // Create Admin User
-  const adminPassword = await bcrypt.hash('admin123', 10);
-  const admin = await prisma.user.create({
-    data: {
-      id: 1001,
-      email: 'admin@school.com',
+  // Use a strong password for admin (change as needed)
+  const adminPlainPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+  const adminPassword = await bcrypt.hash(adminPlainPassword, 12);
+  const admin = await prisma.user.upsert({
+    where: { email: 'admin@arafims.com' },
+    update: {},
+    create: {
+      email: 'admin@arafims.com',
       password: adminPassword,
       role: UserRole.ADMIN,
       sex: GENDER.MALE,
@@ -33,14 +36,18 @@ async function main() {
     },
   });
   console.log('Created admin user:', admin);
-
+  console.log('-----------------------------------');
+  console.log(`Admin Email: admin@arafims.com`);
+  console.log(`Admin Password: ${adminPlainPassword}`);
+  console.log('-----------------------------------');
 
   // Create Student User with Student Profile
   const studentPassword = await bcrypt.hash('student123', 10);
-  const studentUser = await prisma.user.create({
-    data: {
-      id: 3001,
-      email: 'student@school.com',
+  const studentUser = await prisma.user.upsert({
+    where: { email: 'student@arafims.com' },
+    update: {},
+    create: {
+      email: 'student@arafims.com',
       password: studentPassword,
       role: UserRole.STUDENT,
       sex: GENDER.MALE,
@@ -53,7 +60,7 @@ async function main() {
           first_name: 'John',
           last_name: 'Smith',
           dob: new Date('2010-01-01'),
-          level: Level.PRIMARY,
+          type: Type.RESIDENT,
         },
       },
     },

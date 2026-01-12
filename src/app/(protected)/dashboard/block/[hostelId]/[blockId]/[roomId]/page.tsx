@@ -73,7 +73,7 @@ const RoomOccupantsViewPage = async ({ params }: { params: { hostelId: string; b
                       ID: {bed.student.matricNumber}
                     </div>
                     <div className="text-xs text-indigo-600 mt-1">
-                      {bed.student.level}
+                      {bed.student.type}
                     </div>
                   </div>
                 </div>

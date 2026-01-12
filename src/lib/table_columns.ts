@@ -4,8 +4,8 @@ export const classListColumns = [
     accessor: "info",
   },
   {
-    header: "Level",
-    accessor: "level",
+    header: "Type",
+    accessor: "type",
     className: "hidden sm:table-cell",
   },
 

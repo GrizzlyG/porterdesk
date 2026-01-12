@@ -120,6 +120,12 @@ export const MenuItems = [
         visiable: ["ADMIN"],
       },
       {
+        icon: "Upload",
+        label: "Admin Seed",
+        href: "/dashboard/admin-seed",
+        visiable: ["ADMIN"],
+      },
+      {
         icon: "Building",
         label: "Building",
         href: "/dashboard/buildings",
@@ -147,6 +153,12 @@ export const MenuItems = [
         icon: "GraduationCap",
         label: "Students",
         href: "/dashboard/students",
+        visiable: ["ADMIN"],
+      },
+      {
+        icon: "MessageSquare",
+        label: "Complaints",
+        href: "/dashboard/complaints",
         visiable: ["ADMIN"],
       },
     ],

@@ -6,9 +6,9 @@ export enum Status {
   INTERNAL_SERVER_ERROR = 500,
 }
 
-export enum Level {
-  PRIMARY = "PRIMARY",
-  SECONDARY = "SECONDARY",
+export enum Type {
+  RESIDENT = "RESIDENT",
+  VISITOR = "VISITOR",
 }
 
 export enum NoticeType {
@@ -25,7 +25,7 @@ export enum Gender {
 export type FilterOptions = {
   q?: string;
   subject?: string;
-  level?: string;
+  type?: string;
   status?: string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
@@ -67,7 +67,7 @@ export interface Student {
   userId: number;
   dob?: Date | null;
   department?: string | null;
-  level?: Level;
+  type?: Type;
   profileComplete?: boolean;
 }
 

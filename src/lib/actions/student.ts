@@ -2,7 +2,7 @@
 import prisma from "@/lib/db";
 import bcrypt from "bcrypt";
 import { revalidatePath } from "next/cache";
-import { UserRole, UserStatus, GENDER, Level } from "@prisma/client";
+import { UserRole, UserStatus, GENDER, Type } from "@prisma/client";
 import { getDepartmentFromMatric } from "../department_mapping";
 
 interface ReturnProps {
@@ -29,7 +29,7 @@ export async function createStudent(formData: FormData) {
 
     // Phone number is the password
     const hashedPassword = await bcrypt.hash(phone, 10);
-    const email = `student${matricNumberStr.replace(/[^a-zA-Z0-9]/g, '')}@school.com`;
+    const email = `student${matricNumberStr.replace(/[^a-zA-Z0-9]/g, '')}@arafims.com`;
     const department = getDepartmentFromMatric(matricNumberStr.toString());
 
     await prisma.user.create({
@@ -45,6 +45,7 @@ export async function createStudent(formData: FormData) {
           create: {
             matricNumber: matricNumberStr,
             department: department || undefined,
+            type: Type.RESIDENT,
           },
         },
       },
@@ -64,12 +65,12 @@ export async function registerStudent(prevState: any, formData: FormData): Promi
   const phone = formData.get("phone") as string;
   const password = formData.get("password") as string;
   const dob = formData.get("dob") as string;
-  const level = formData.get("level") as Level;
+  const type = formData.get("type") as Type;
   const sex = formData.get("sex") as GENDER;
   const address = formData.get("address") as string;
 
   // Basic validation
-  if (!firstName || !lastName || !matricNumberStr || !phone || !password || !dob || !level || !sex || !address) {
+  if (!firstName || !lastName || !matricNumberStr || !phone || !password || !dob || !type || !sex || !address) {
     return { success: false, message: "All fields are required." };
   }
 
@@ -83,7 +84,7 @@ export async function registerStudent(prevState: any, formData: FormData): Promi
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const email = `student${matricNumberStr.replace(/[^a-zA-Z0-9]/g, '')}@school.com`;
+    const email = `student${matricNumberStr.replace(/[^a-zA-Z0-9]/g, '')}@arafims.com`;
     const department = getDepartmentFromMatric(matricNumberStr);
 
     await prisma.user.create({
@@ -92,7 +93,7 @@ export async function registerStudent(prevState: any, formData: FormData): Promi
         password: hashedPassword,
         role: UserRole.STUDENT,
         sex: sex,
-        status: UserStatus.ACTIVE,
+        status: UserStatus.INACTIVE, // Pending approval
         phone: phone,
         address: address,
         studentProfile: {
@@ -101,7 +102,7 @@ export async function registerStudent(prevState: any, formData: FormData): Promi
             last_name: lastName,
             matricNumber: matricNumberStr,
             dob: new Date(dob),
-            level: level,
+            type: type,
             profileComplete: true, // Profile is complete on self-registration
             department: department || undefined,
           },
@@ -122,11 +123,11 @@ export async function completeStudentProfile(prevState: any, formData: FormData)
   const lastName = formData.get("lastName") as string;
   const phone = formData.get("phone") as string;
   const dob = formData.get("dob") as string;
-  const level = formData.get("level") as Level;
+  const type = formData.get("type") as Type;
   const sex = formData.get("sex") as GENDER;
   const address = formData.get("address") as string;
 
-  if (!userId || !firstName || !lastName || !phone || !dob || !level || !sex || !address) {
+  if (!userId || !firstName || !lastName || !phone || !dob || !type || !sex || !address) {
     return { success: false, message: "All fields are required." };
   }
 
@@ -142,7 +143,7 @@ export async function completeStudentProfile(prevState: any, formData: FormData)
             first_name: firstName,
             last_name: lastName,
             dob: new Date(dob),
-            level: level,
+            type: type,
             profileComplete: true,
           }
         }
@@ -154,5 +155,19 @@ export async function completeStudentProfile(prevState: any, formData: FormData)
   } catch (error) {
     console.error("Complete profile error:", error);
     return { success: false, message: "Failed to complete profile." };
+  }
+}
+
+export async function approveStudent(userId: number): Promise<ReturnProps> {
+  try {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { status: 'ACTIVE' },
+    });
+    revalidatePath('/dashboard/students');
+    return { success: true, message: 'Student approved successfully.' };
+  } catch (error) {
+    console.error('Approve student error:', error);
+    return { success: false, message: 'Failed to approve student.' };
   }
 }

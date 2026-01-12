@@ -3,6 +3,17 @@
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
+export async function deleteRoom(roomId: string, hostelId: string, blockId: string) {
+  try {
+    await prisma.hostelRoom.delete({ where: { id: roomId } });
+    revalidatePath(`/dashboard/buildings/${hostelId}/blocks/${blockId}`);
+    return { success: true, message: "Room deleted successfully" };
+  } catch (error) {
+    console.error("Failed to delete room:", error);
+    return { success: false, message: "Failed to delete room" };
+  }
+}
+
 export async function createRoom(formData: FormData) {
   const roomNumber = formData.get("roomNumber") as string;
   const capacity = parseInt(formData.get("capacity") as string) || 4;

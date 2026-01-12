@@ -1,3 +1,12 @@
+model Complaint {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  status      String   @default("PENDING")
+  createdAt   DateTime @default(now())
+  studentId   Int
+  student     student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
 generator client {
   provider = "prisma-client-js"
 }
@@ -5,108 +14,103 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  
 }
 
-model user{
-    id            Int    @id @unique @default(autoincrement())
-    email         String    @unique
-    password      String
-    role          UserRole
-    sex           GENDER 
-    status        UserStatus @default(ACTIVE)
-    img           String?
-    lastLogin     DateTime?
-    studentProfile student?
-    phone           String
-    address         String
-    createdAt     DateTime  @default(now())
-    updatedAt     DateTime  @updatedAt
+model user {
+  id             Int        @id @unique @default(autoincrement())
+  email          String     @unique
+  password       String
+  role           UserRole
+  sex            GENDER
+  status         UserStatus @default(ACTIVE)
+  img            String?
+  lastLogin      DateTime?
+  phone          String
+  address        String
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  studentProfile student?
 }
 
-
-model student{
-  id              Int      @id @default(autoincrement())
+model student {
   first_name      String?
   last_name       String?
-  matricNumber    String   @unique
-  user            user     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          Int      @unique
   dob             DateTime?
+  type            Type? @default(RESIDENT)
   department      String?
-  level           Level?
+  profileComplete Boolean   @default(false)
+  id              Int       @id @default(autoincrement())
+  matricNumber    String    @unique
+  userId          Int       @unique
   bedspace        Bedspace?
-  profileComplete Boolean  @default(false)
-
+  complaints      Complaint[]
+  user            user      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-
 model Notice {
-  id            String    @id @default(cuid())
-  headline      String
-  subhead       String?
-  body          String
-  ps            String?
-  imageUrl      String?
-  fileUrl       String?
-  type          NoticeType
-  visibleToManagers Boolean @default(false)
-  visibleToPorters  Boolean @default(false)
-  visibleToStudents Boolean @default(false)
-  createdAt     DateTime  @default(now())
+  id                String     @id @default(cuid())
+  type              NoticeType
+  createdAt         DateTime   @default(now())
+  body              String
+  fileUrl           String?
+  headline          String
+  imageUrl          String?
+  ps                String?
+  subhead           String?
+  visibleToManagers Boolean    @default(false)
+  visibleToPorters  Boolean    @default(false)
+  visibleToStudents Boolean    @default(false)
 }
 
 model Hostel {
   id        String   @id @default(uuid())
   name      String   @unique
   address   String?
-  blocks    Block[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  blocks    Block[]
 }
 
 model Block {
-  id        String   @id @default(uuid())
+  id        String       @id @default(uuid())
   name      String
   hostelId  String
-  hostel    Hostel   @relation(fields: [hostelId], references: [id], onDelete: Cascade)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  hostel    Hostel       @relation(fields: [hostelId], references: [id], onDelete: Cascade)
   rooms     HostelRoom[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model HostelRoom {
-  id        String   @id @default(uuid())
+  id         String     @id @default(uuid())
   roomNumber String
-  capacity  Int      @default(4)
-  blockId   String
-  block     Block    @relation(fields: [blockId], references: [id], onDelete: Cascade)
-  bedspaces Bedspace[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  capacity   Int        @default(4)
+  blockId    String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  bedspaces  Bedspace[]
+  block      Block      @relation(fields: [blockId], references: [id], onDelete: Cascade)
 }
 
 model Bedspace {
-  id        String   @id @default(uuid())
-  number    String
-  roomId    String
-  room      HostelRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  studentId Int?     @unique
-  student   student? @relation(fields: [studentId], references: [id])
-  isOccupied Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String     @id @default(uuid())
+  number     String
+  roomId     String
+  studentId  Int?       @unique
+  isOccupied Boolean    @default(false)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  room       HostelRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  student    student?   @relation(fields: [studentId], references: [id])
 }
 
-model Authority{
-  id            String  @id @default(cuid())
-  fullName   String
-  phone      String
-  type       AuthorityType
-  message    String  @db.Text
-  createdAt  DateTime  @default(now())
-
-  
+model Authority {
+  id        String        @id @default(cuid())
+  fullName  String
+  phone     String
+  type      AuthorityType
+  message   String
+  createdAt DateTime      @default(now())
 }
 
 enum AuthorityType {
@@ -118,37 +122,23 @@ enum AuthorityType {
   MANAGER
   SUPERVISOR
   COORDINATOR
-
 }
 
-
-enum Level {
-  PRIMARY
-  SECONDARY
+enum Type {
+  RESIDENT
+  VISITOR
 }
 
-enum AttendanceStatus {
-  PRESENT
-  ABSENT
-  LATE
-  HALF_DAY
-  EXCUSED
-  ON_LEAVE
-}
-
-// Enum for notice types (e.g., general announcements, events, assignments, etc.)
 enum NoticeType {
   UNIVERSITY
   HOSTEL
   INFORMAL
 }
 
-// Enum to define the target audience for the notice
 enum AudienceType {
-  ALL            // Notice for the whole school
-  STAFF          // Notice for all staff members
-  STUDENTS       // Notice for all students
-  
+  ALL
+  STAFF
+  STUDENTS
 }
 
 enum GENDER {
@@ -166,27 +156,15 @@ enum DayOfWeek {
   FRIDAY
 }
 
-enum LeaveStatus {
-  PENDING      // Initial state when leave is requested
-  APPROVED     // Leave approved by authority
-  REJECTED     // Leave request denied
-  CANCELLED    // Leave cancelled by teacher
-  PARTIALLY_APPROVED  // Approved with modified dates
-  ON_HOLD     // Need more information/documentation
-  IN_PROGRESS  // Currently on leave
-  COMPLETED    // Leave period completed
-  EXPIRED      // Approved but not taken
+enum UserRole {
+  ADMIN
+  MANAGER
+  PORTER
+  STUDENT
 }
 
-enum UserRole {
-    ADMIN
-    MANAGER
-    PORTER
-    STUDENT
-  }
-
-  enum UserStatus {
-    ACTIVE
-    INACTIVE
-    SUSPENDED
-  }
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}

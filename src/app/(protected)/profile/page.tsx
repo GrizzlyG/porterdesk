@@ -1,30 +1,33 @@
-import { decrypt } from "@/session";
 import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
-
+import { decrypt } from "@/session";
 import StudentProfileCard from "@/components/profile/StudentProfileCard";
 
 const ProfilePage = async () => {
+  // Get session cookie
   const session = cookies().get("__session")?.value;
-  if (!session) {
-    notFound();
-  }
-  const { user } = await decrypt(session);
-
-  if (!user) {
-    notFound();
-  }
-
-  const uid = user.id ? parseInt(user.id as string) : null;
-  if (!uid || isNaN(uid)) {
-    notFound();
+  let user = null;
+  try {
+    const result = await decrypt(session);
+    user = result?.user;
+  } catch (error) {
+    user = null;
   }
 
-  if (user.role === "STUDENT") {
-    return <StudentProfileCard role="STUDENT" id={uid} />;
+  if (!user || user.role !== "STUDENT") {
+    return (
+      <div className="text-red-600 p-8 text-center">
+        Profile not found or you are not logged in as a student.
+      </div>
+    );
   }
 
-  notFound();
+  // Render student profile card with user id
+  return (
+    <div className="max-w-2xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Student Profile</h1>
+      <StudentProfileCard role="STUDENT" id={user.id} />
+    </div>
+  );
 };
 
 export default ProfilePage;

@@ -1,10 +1,16 @@
-import { PrismaClient, UserRole, UserStatus, GENDER, Level } from '@prisma/client';
+import { PrismaClient, UserRole, UserStatus, GENDER, Type } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
 import bcrypt from 'bcrypt';
 import { getDepartmentFromMatric } from '../lib/department_mapping';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: "prisma+postgres://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqd3RfaWQiOjEsInNlY3VyZV9rZXkiOiJza19qOEJxQXdJU24wNGRyVDl4UzhCMnMiLCJhcGlfa2V5IjoiMDFLRFRQRUhWVDMwUThSUlFHVEdSVDZURlkiLCJ0ZW5hbnRfaWQiOiI1YjQyZjE0MzU4ODIwYjQ1YTBiNDU5NzBjNTMzODYyYTgyYzFlODg4Nzg0MzgwM2U1ZGM4YmI5ZGM2MjU1MzBmIiwiaW50ZXJuYWxfc2VjcmV0IjoiNjRkMzgyYTAtYTQ3YS00M2FmLWExYzctYWZkOWNhMTk3YWM4In0.ouk8CutLPJbxm2ASdNs_W3q4cvIv2MhD9JJ3By-Usao",
+    },
+  },
+});
 
 function parseCSV(text: string): string[][] {
   const result: string[][] = [];
@@ -97,7 +103,7 @@ async function main() {
 
     const hashedPassword = await bcrypt.hash(phone, 10);
     // Create unique email based on matric to satisfy User schema
-    const email = `student${matric.replace(/[^a-zA-Z0-9]/g, '')}@school.com`;
+    const email = `student${matric.replace(/[^a-zA-Z0-9]/g, '')}@arafims.com`;
 
     try {
         const newUser = await prisma.user.create({
@@ -116,7 +122,7 @@ async function main() {
                         matricNumber: matric,
                         department: dept,
                         dob: dob,
-                        level: Level.PRIMARY,
+                        type: Type.RESIDENT,
                         profileComplete: true
                     }
                 }

@@ -32,7 +32,7 @@ export default async function DashboardLayout({
           href={"/"}
           className="flex items-center justify-center lg:justify-start gap-2"
         >
-          <Image src={SCHOOL_LOGO} width={32} height={32} alt="logo" />
+          <span className="w-8 h-8 flex items-center justify-center rounded-full bg-green-700 text-white text-2xl font-extrabold">A</span>
           <span className="hidden font-bold lg:block">{SCHOOL_SHORTNAME}</span>
         </Link>
         <Menu role={user.role} />

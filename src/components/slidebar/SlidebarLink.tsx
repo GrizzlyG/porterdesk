@@ -17,12 +17,12 @@ const SlideBarLink = ({
   const mainPath = pathName.split("?")[0].split("/")[2];
   const baseHref = href.split("/")[2];
   const isMatch = mainPath === baseHref;
-  const style = isMatch ? "bg-blue-800 text-white" : "";
+  const style = isMatch ? "bg-green-700 text-white" : "";
 
   return (
     <Link
       key={label}
-      className={`text-lg my-0.5 text-black flex justify-center items-center lg:justify-start gap-2 py-2 md:px-2 rounded-md hover:bg-blue-600 hover:text-white ${style}`}
+      className={`text-lg my-0.5 text-black flex justify-center items-center lg:justify-start gap-2 py-2 md:px-2 rounded-md hover:bg-green-600 hover:text-white ${style}`}
       href={href}
     >
       <div className="">

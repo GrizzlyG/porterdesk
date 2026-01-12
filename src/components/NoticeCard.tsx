@@ -30,6 +30,9 @@ const NoticeCard = ({ notice, userRole }: { notice: Notice, userRole?: UserRole 
             {notice.visibleToStudents && <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">Students</span>}
             {(!notice.visibleToManagers && !notice.visibleToPorters && !notice.visibleToStudents) && <span className="text-gray-400">None</span>}
           </div>
+          <form method="post" action={`/api/notices/delete/${notice.id}`} className="ml-4">
+            <button type="submit" className="bg-red-600 text-white px-3 py-1 rounded">Delete</button>
+          </form>
         </div>
       )}
       <div className="text-right text-xs text-gray-400 mt-2">

@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { sendPushNotificationToAdmin } from "@/lib/sendPushNotificationToAdmin";
 
 export async function createComplaint(prevState: any, formData: FormData) {
   const title = formData.get("title") as string;
@@ -26,6 +27,9 @@ export async function createComplaint(prevState: any, formData: FormData) {
         status: "PENDING",
       },
     });
+
+    // Send push notification to admin
+    await sendPushNotificationToAdmin({ title, description });
 
     revalidatePath("/admin/complaints");
     revalidatePath("/dashboard/complaints");

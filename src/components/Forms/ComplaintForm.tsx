@@ -17,9 +17,8 @@ export default function ComplaintForm({ studentId }: { studentId: string | numbe
   useEffect(() => {
     if (state.success) {
       toast.success(state.message);
-      setTimeout(() => {
-        router.push("/dashboard/complaints");
-      }, 1200); // 1.2s delay for toast visibility
+      router.push("/dashboard/complaints");
+      window.location.reload();
     } else if (state.message) {
       toast.error(state.message);
     }

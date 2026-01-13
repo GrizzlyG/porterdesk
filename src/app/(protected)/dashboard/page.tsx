@@ -4,6 +4,7 @@ import { Status } from "@/lib/types";
 import { Users } from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import AdminFCMTokenRegister from "@/components/AdminFCMTokenRegister";
 
 const HostelBarsOverview = dynamic(
   () => import("../../../components/HostelBarsOverview").then(m => m.default),
@@ -35,6 +36,7 @@ const DashboardPage = async () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
+      <AdminFCMTokenRegister />
       <h1 className="text-3xl font-bold text-gray-800 mb-6">
         Dashboard Overview
       </h1>

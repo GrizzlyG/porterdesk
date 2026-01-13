@@ -1,3 +1,7 @@
+model AdminToken {
+  id    Int    @id
+  token String
+}
 generator client {
   provider = "prisma-client-js"
 }
